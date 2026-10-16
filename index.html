@@ -531,11 +531,24 @@
         return;
       }
       var digits = (json.idNumber || "").replace(/[^\d]/g, "");
+      var scannedName = (json.guardianName || "").trim();
+      var filledNumber = false, filledName = false;
       if(digits.length >= 5 && digits.length <= 12){
         $("#idNumber").value = digits;
-        setStatus(statusEl, "ok", "تم القراءة — راجعي الرقم ويمكنك تعديله");
+        filledNumber = true;
+      }
+      if(scannedName){
+        $("#guardianName").value = scannedName;
+        filledName = true;
+      }
+      if(filledNumber && filledName){
+        setStatus(statusEl, "ok", "تم القراءة — راجعي الاسم ورقم البطاقة ويمكنك تعديلهما");
+      } else if(filledNumber){
+        setStatus(statusEl, "ok", "تم قراءة رقم البطاقة فقط — راجعيه، واكتبي اسم ولي الأمر يدوياً");
+      } else if(filledName){
+        setStatus(statusEl, "warn", "تم قراءة الاسم فقط — يرجى إدخال رقم البطاقة يدوياً");
       } else {
-        setStatus(statusEl, "warn", "تعذّرت القراءة بدقة، يرجى إدخال الرقم يدوياً أو مراجعته");
+        setStatus(statusEl, "warn", "تعذّرت القراءة بدقة، يرجى إدخال البيانات يدوياً أو مراجعتها");
       }
     } catch(e){
       setStatus(statusEl, "err", "تعذّر الاتصال بخدمة القراءة. تحقّقي من الإنترنت ورابط Apps Script.");
