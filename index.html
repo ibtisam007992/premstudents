@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>استمارة استئذان الطالبات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+  :root{
+    --bg:#F4F1EC; --surface:#FFFFFF; --fg:#1E2B28; --muted:#5B6B66; --border:#DDD7CC;
+    --accent:#0E6E62; --accent-ink:#F4FBF9; --warn:#B5731B; --warn-bg:#FBF1E2;
+    --danger:#B23A3A; --danger-bg:#FBEAE9; --ok:#1E7D4F; --ok-bg:#E9F7EF; --chip-bg:#EEF6F4;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121A18; --surface:#1B2522; --fg:#EDEFEC; --muted:#9FB0AA; --border:#30403B;
+      --accent:#49C9B5; --accent-ink:#06211C; --warn:#E5A95C; --warn-bg:#2C2317;
+      --danger:#E58A82; --danger-bg:#2C1917; --ok:#7BD9A6; --ok-bg:#122A1F; --chip-bg:#1F2B28;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121A18; --surface:#1B2522; --fg:#EDEFEC; --muted:#9FB0AA; --border:#30403B;
+    --accent:#49C9B5; --accent-ink:#06211C; --warn:#E5A95C; --warn-bg:#2C2317;
+    --danger:#E58A82; --danger-bg:#2C1917; --ok:#7BD9A6; --ok-bg:#122A1F; --chip-bg:#1F2B28;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:"Tajawal","Segoe UI",Tahoma,sans-serif; font-variant-numeric:tabular-nums;
+    padding:16px; padding-bottom:40px;
+  }
+  .wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  header.top{
+    position:sticky;top:0;z-index:5;background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+    gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);
+  }
+  header.top h1{font-size:17px;font-weight:800;margin:0}
+  header.top .sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .badge{background:var(--chip-bg);color:var(--accent);border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;white-space:nowrap}
+  section.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+  section.card h2{font-size:14px;font-weight:800;margin:0;display:flex;align-items:center;gap:8px;color:var(--fg)}
+  section.card h2 .num{background:var(--accent);color:var(--accent-ink);width:22px;height:22px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+  label{font-size:12.5px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px}
+  .field{min-width:0}
+  input[type=text],input[type=tel],select,textarea{
+    width:100%;font:inherit;font-size:15px;color:var(--fg);background:var(--bg);
+    border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical;min-height:60px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:420px){.row2{grid-template-columns:1fr}}
+  .search-box{position:relative}
+  .search-box input{padding-left:38px}
+  .search-box .icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+  .suggest{position:absolute;inset-inline:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--border);border-radius:10px;max-height:240px;overflow-y:auto;z-index:8;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+  .suggest button{display:block;width:100%;text-align:right;background:none;border:none;border-bottom:1px solid var(--border);padding:9px 12px;font:inherit;color:var(--fg);cursor:pointer}
+  .suggest button:last-child{border-bottom:none}
+  .suggest button:hover,.suggest button:focus{background:var(--chip-bg)}
+  .suggest button .cls{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+  .suggest .empty{padding:10px 12px;font-size:13px;color:var(--muted)}
+  .hint{font-size:12px;color:var(--muted)}
+  .pill-readonly{background:var(--chip-bg);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  button.btn{font:inherit;font-weight:700;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--fg);padding:10px 14px;cursor:pointer}
+  button.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  button.btn.block{width:100%}
+  button.btn:disabled{opacity:.55;cursor:not-allowed}
+  button.btn.big{padding:14px 16px;font-size:16px}
+  .camera-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);flex:none}
+  .status-line{font-size:12.5px;display:flex;align-items:center;gap:6px}
+  .status-line.ok{color:var(--ok)}
+  .status-line.warn{color:var(--warn)}
+  .status-line.err{color:var(--danger)}
+  .status-line.muted{color:var(--muted)}
+  .other-reason{display:none}
+  .other-reason.show{display:block}
+  .save-bar{display:flex;flex-direction:column;gap:8px}
+  .save-msg{font-size:13px;border-radius:10px;padding:9px 12px;display:none}
+  .save-msg.show{display:block}
+  .save-msg.ok{background:var(--ok-bg);color:var(--ok)}
+  .save-msg.err{background:var(--danger-bg);color:var(--danger)}
+  table.log{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.log th,table.log td{border-bottom:1px solid var(--border);padding:7px 6px;text-align:right;vertical-align:top}
+  table.log th{color:var(--muted);font-weight:700;font-size:11.5px}
+  .log-wrap{overflow-x:auto}
+  .empty-state{font-size:13px;color:var(--muted);padding:6px 2px}
+  .foot-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .foot-actions button,.foot-actions a.btn{flex:1 1 150px;text-align:center;text-decoration:none}
+  .note{font-size:11.5px;color:var(--muted);line-height:1.6}
+  .req:after{content:" *";color:var(--danger)}
+  .sheet-link{display:block;font-size:12.5px;color:var(--accent);word-break:break-all;margin-top:6px}
+  .warn-banner{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>استمارة استئذان الطالبات</h1>
+      <div class="sub" id="todayLine">—</div>
+    </div>
+    <div class="badge" id="periodBadge">—</div>
+  </header>
+
+  <div class="warn-banner" id="configWarning" hidden>
+    ⚠️ لم يتم إعداد رابط Apps Script بعد. افتحي ملف <code>index.html</code> وعدّلي قيم <code>CONFIG</code> في أعلى الكود،
+    بعد نشر <code>Code.gs</code> كما هو موضّح في ملف README المرفق.
+  </div>
+
+  <section class="card">
+    <h2><span class="num">1</span> بيانات الطالبة</h2>
+    <div class="field">
+      <label for="gradeFilter">الصف</label>
+      <select id="gradeFilter">
+        <option value="">كل الصفوف</option>
+        <option value="التاسع">تاسع</option>
+        <option value="العاشر">عاشر</option>
+        <option value="الحادي عشر">حادي عشر</option>
+        <option value="الثاني عشر">الثاني عشر</option>
+      </select>
+    </div>
+    <div class="field search-box">
+      <label class="req" for="studentSearch">البحث عن الطالبة</label>
+      <span class="icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </span>
+      <input type="text" id="studentSearch" placeholder="اكتبي اسم الطالبة..." autocomplete="off">
+      <div class="suggest" id="suggestBox" hidden></div>
+    </div>
+    <div class="hint" id="rosterStatus">اختاري الصف أولاً (اختياري)، ثم اكتبي حرفين على الأقل لعرض نتائج من قاعدة بيانات المدرسة.</div>
+    <div class="row2">
+      <div class="field">
+        <label class="req" for="studentName">اسم الطالبة</label>
+        <input type="text" id="studentName" placeholder="يُملأ تلقائياً من البحث">
+      </div>
+      <div class="field">
+        <label class="req" for="className">الصف / الشعبة</label>
+        <input type="text" id="className" placeholder="مثال: التاسع / 1">
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> بيانات المستأذن (الشخص المستلِم)</h2>
+    <div class="row2">
+      <div class="field">
+        <label class="req" for="guardianName">اسم ولي الأمر / المستلِم</label>
+        <input type="text" id="guardianName" placeholder="الاسم الثلاثي">
+      </div>
+      <div class="field">
+        <label class="req" for="relation">صلة القرابة</label>
+        <select id="relation">
+          <option value="">اختاري...</option>
+          <option>الأب</option><option>الأم</option><option>أخ</option><option>أخت</option>
+          <option>عم</option><option>عمة</option><option>خال</option><option>خالة</option>
+          <option>الجد</option><option>الجدة</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label class="req" for="phone">هاتف ولي الأمر</label>
+      <input type="tel" id="phone" placeholder="9xxxxxxx" inputmode="numeric">
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">3</span> رقم البطاقة الشخصية</h2>
+    <div class="camera-row">
+      <button type="button" class="btn" id="scanBtn">📷 مسح البطاقة بالكاميرا</button>
+      <input type="file" accept="image/*" capture="environment" id="idPhotoInput" hidden>
+      <img id="idThumb" class="thumb" hidden alt="صورة البطاقة">
+      <span class="status-line muted" id="scanStatus">لم يتم المسح بعد</span>
+    </div>
+    <div class="field">
+      <label class="req" for="idNumber">رقم البطاقة الشخصية</label>
+      <input type="text" id="idNumber" placeholder="يُقرأ تلقائياً أو يُكتب يدوياً" inputmode="numeric">
+    </div>
+    <div class="note">
+      عند التقاط الصورة تُرفع مؤقتاً إلى حساب جوجل درايف الخاص بالمدرسة عبر Apps Script لقراءة الرقم آلياً
+      (بتقنية OCR المجانية المدمجة في جوجل درايف)، ثم تُحذف الصورة والملف المؤقت الناتج عنها فوراً بعد القراءة
+      ولا يبقى أي أثر لهما في درايف. الدقة قد تكون أقل من نسخة Claude الأصلية، فراجعي الرقم دائماً قبل الحفظ.
+      يتطلب هذا إعداد Apps Script بالكامل كما في README.md (بما في ذلك تفعيل خدمة Drive API).
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">4</span> تفاصيل الاستئذان</h2>
+    <div class="row2">
+      <div class="field">
+        <label>تاريخ الخروج</label>
+        <div class="pill-readonly"><span id="exitDateDisplay">—</span></div>
+      </div>
+      <div class="field">
+        <label for="periodSelect">الحصة</label>
+        <select id="periodSelect">
+          <option value="">— تلقائي —</option>
+          <option value="1">الحصة الأولى</option>
+          <option value="2">الحصة الثانية</option>
+          <option value="3">الحصة الثالثة</option>
+          <option value="4">الحصة الرابعة</option>
+          <option value="فسحة">الفسحة</option>
+          <option value="5">الحصة الخامسة</option>
+          <option value="6">الحصة السادسة</option>
+          <option value="7">الحصة السابعة</option>
+          <option value="8">الحصة الثامنة</option>
+          <option value="خارج الدوام">خارج وقت الحصص</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label class="req" for="reason">سبب الاستئذان</label>
+      <select id="reason">
+        <option value="">اختاري...</option>
+        <option>ظرف طبي</option>
+        <option>ظرف طارئ</option>
+        <option value="آخر">آخر (يُكتب يدوياً)</option>
+      </select>
+    </div>
+    <div class="field other-reason" id="otherReasonField">
+      <label for="reasonOther">توضيح السبب</label>
+      <input type="text" id="reasonOther" placeholder="اكتبي السبب هنا">
+    </div>
+    <div class="field">
+      <label for="note">الملاحظة (تُدوَّن من قبل المنسقة)</label>
+      <textarea id="note" placeholder="أي ملاحظة إضافية..."></textarea>
+    </div>
+  </section>
+
+  <section class="card save-bar">
+    <button type="button" class="btn primary big block" id="saveBtn">حفظ الاستئذان</button>
+    <div class="save-msg" id="saveMsg"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">5</span> سجل اليوم</h2>
+    <div class="log-wrap">
+      <table class="log" id="logTable">
+        <thead><tr><th>الطالبة</th><th>الصف</th><th>الحصة</th><th>السبب</th><th>الوقت</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="logEmpty">جارٍ التحميل...</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">6</span> عدد الاستئذانات لكل طالبة</h2>
+    <div class="log-wrap">
+      <table class="log" id="countsTable">
+        <thead><tr><th>م</th><th>اسم الطالبة</th><th>الصف</th><th>عدد مرات الاستئذان</th></tr></thead>
+        <tbody id="countsBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="countsEmpty">جارٍ التحميل...</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">7</span> جوجل شيت والتنزيل</h2>
+    <div class="note">
+      كل استئذان يُحفظ يُضاف كصف جديد مباشرة في جوجل شيت «قاعدة استئذان الطالبات» عبر Apps Script، فلا حاجة لزر
+      مزامنة منفصل — الشيت هو نفسه قاعدة البيانات الحيّة.
+    </div>
+    <div class="foot-actions">
+      <a class="btn" id="openSheetBtn" href="#" target="_blank" rel="noopener">فتح جوجل شيت</a>
+      <button type="button" class="btn" id="refreshBtn">تحديث السجل الآن</button>
+      <button type="button" class="btn" id="downloadBtn">تنزيل نسخة CSV</button>
+    </div>
+    <div class="status-line muted" id="syncStatus"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ======================================================================
+  // إعدادات — عدّلي القيم التالية بعد نشر Code.gs (راجعي ملف README.md)
+  // ======================================================================
+  var CONFIG = {
+    ROSTER_SHEET_ID: "1HQONakQiL1_0YXpBAkq4Xo91pl-6exzLB4Q_sBd4SAs",
+    ROSTER_GID: "0",
+    SCRIPT_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
+    SHARED_TOKEN: "change-this-secret",
+    SHEET_VIEW_URL: "PASTE_YOUR_ENTRIES_GOOGLE_SHEET_URL_HERE"
+  };
+  // ======================================================================
+
+  var TZ = "Asia/Muscat";
+
+  function $(sel){ return document.querySelector(sel); }
+
+  if(!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.indexOf("PASTE_") === 0){
+    $("#configWarning").hidden = false;
+  }
+  $("#openSheetBtn").href = (CONFIG.SHEET_VIEW_URL && CONFIG.SHEET_VIEW_URL.indexOf("PASTE_") !== 0) ? CONFIG.SHEET_VIEW_URL : "#";
+
+  // ---------- Oman clock / date / period ----------
+  var PERIODS = [
+    {n:1, label:"الحصة الأولى",  s:[7,35],  e:[8,15]},
+    {n:2, label:"الحصة الثانية", s:[8,15],  e:[8,55]},
+    {n:3, label:"الحصة الثالثة", s:[8,55],  e:[9,35]},
+    {n:4, label:"الحصة الرابعة", s:[9,35],  e:[10,15]},
+    {n:5, label:"الحصة الخامسة", s:[10,55], e:[11,35]},
+    {n:6, label:"الحصة السادسة", s:[11,35], e:[12,15]},
+    {n:7, label:"الحصة السابعة", s:[12,15], e:[12,55]},
+    {n:8, label:"الحصة الثامنة", s:[12,55], e:[13,35]}
+  ];
+  var BREAK = {s:[10,30], e:[10,55]};
+
+  function omanParts(){
+    var fmt = new Intl.DateTimeFormat("en-CA", {
+      timeZone: TZ, year:"numeric", month:"2-digit", day:"2-digit",
+      hour:"2-digit", minute:"2-digit", hour12:false
+    });
+    var parts = {};
+    fmt.formatToParts(new Date()).forEach(function(p){ parts[p.type] = p.value; });
+    return {
+      y:+parts.year, mo:+parts.month, d:+parts.day,
+      h: parts.hour === "24" ? 0 : +parts.hour, mi:+parts.minute
+    };
+  }
+  function toMin(hm){ return hm[0]*60 + hm[1]; }
+  function fmt2(n){ return n<10 ? "0"+n : ""+n; }
+
+  function currentPeriod(){
+    var p = omanParts();
+    var m = p.h*60 + p.mi;
+    if(m >= toMin(BREAK.s) && m < toMin(BREAK.e)) return {value:"فسحة", label:"الفسحة"};
+    for(var i=0;i<PERIODS.length;i++){
+      var pr = PERIODS[i];
+      if(m >= toMin(pr.s) && m < toMin(pr.e)) return {value:String(pr.n), label:pr.label};
+    }
+    return {value:"خارج الدوام", label:"خارج وقت الحصص"};
+  }
+
+  function isoDate(){
+    var p = omanParts();
+    return p.y + "-" + fmt2(p.mo) + "-" + fmt2(p.d);
+  }
+
+  var periodManuallySet = false;
+  $("#periodSelect").addEventListener("change", function(){ periodManuallySet = true; });
+
+  function updateHeader(){
+    var p = omanParts();
+    var dateStr = new Intl.DateTimeFormat("ar-OM", {timeZone:TZ, weekday:"long", year:"numeric", month:"long", day:"numeric"}).format(new Date());
+    var timeStr = fmt2(p.h) + ":" + fmt2(p.mi);
+    $("#todayLine").textContent = dateStr + " — " + timeStr;
+    $("#exitDateDisplay").textContent = isoDate();
+    var cur = currentPeriod();
+    $("#periodBadge").textContent = cur.label;
+    if(!periodManuallySet){ $("#periodSelect").value = cur.value; }
+  }
+  updateHeader();
+  setInterval(updateHeader, 30000);
+
+  // ---------- roster (student search), read-only from a published Google Sheet ----------
+  var roster = null, rosterLoading = null;
+
+  function norm(s){
+    return (s||"")
+      .replace(/[ً-ٰٟ]/g,"")
+      .replace(/[إأآا]/g,"ا")
+      .replace(/ة/g,"ه")
+      .replace(/[يى]/g,"ي")
+      .replace(/\s+/g," ")
+      .trim();
+  }
+
+  function gradeOf(cls){
+    cls = cls || "";
+    if(cls.indexOf("الثاني عشر") > -1 || cls.indexOf("12") > -1) return "الثاني عشر";
+    if(cls.indexOf("الحادي عشر") > -1 || cls.indexOf("11") > -1) return "الحادي عشر";
+    if(cls.indexOf("عاشر") > -1 || cls.indexOf("10") > -1) return "العاشر";
+    if(cls.indexOf("تاسع") > -1 || cls.indexOf("9") > -1) return "التاسع";
+    return "";
+  }
+
+  function parseCsvLine(line){
+    var out = [], cur = "", inQ = false;
+    for(var i=0;i<line.length;i++){
+      var ch = line[i];
+      if(inQ){
+        if(ch === '"'){
+          if(line[i+1] === '"'){ cur += '"'; i++; } else { inQ = false; }
+        } else cur += ch;
+      } else {
+        if(ch === '"') inQ = true;
+        else if(ch === ','){ out.push(cur); cur = ""; }
+        else cur += ch;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function parseRosterCsv(text){
+    var lines = text.split(/\r\n|\n|\r/).filter(function(l){ return l.trim().length; });
+    var rows = lines.slice(1).map(parseCsvLine);
+    // يفترض أن العمود الأول = اسم الطالبة، الثاني = الصف/الشعبة. عدّلي الفهارس أدناه إن كان ترتيب الأعمدة مختلفاً في شيتك.
+    return rows.map(function(c){ return {name:(c[0]||"").trim(), cls:(c[1]||"").trim()}; }).filter(function(r){ return r.name; });
+  }
+
+  function ensureRoster(){
+    if(roster) return Promise.resolve(roster);
+    if(rosterLoading) return rosterLoading;
+    $("#rosterStatus").textContent = "جارٍ تحميل قائمة الطالبات...";
+    var url = "https://docs.google.com/spreadsheets/d/" + CONFIG.ROSTER_SHEET_ID + "/gviz/tq?tqx=out:csv&gid=" + CONFIG.ROSTER_GID;
+    rosterLoading = fetch(url).then(function(res){
+      if(!res.ok) throw new Error("http_" + res.status);
+      return res.text();
+    }).then(function(text){
+      roster = parseRosterCsv(text);
+      $("#rosterStatus").textContent = "تم تحميل " + roster.length + " طالبة. اكتبي حرفين على الأقل للبحث.";
+      return roster;
+    }).catch(function(e){
+      $("#rosterStatus").textContent = "تعذّر تحميل قائمة الطالبات. تأكدي أن شيت الطالبات مُشارَك بوضع «أي شخص لديه الرابط - مُشاهد».";
+      roster = [];
+      return roster;
+    });
+    return rosterLoading;
+  }
+
+  var suggestTimer = null;
+  $("#studentSearch").addEventListener("focus", function(){ ensureRoster(); });
+  $("#studentSearch").addEventListener("input", function(){
+    clearTimeout(suggestTimer);
+    var q = this.value;
+    suggestTimer = setTimeout(function(){ renderSuggestions(q); }, 120);
+  });
+  $("#gradeFilter").addEventListener("change", function(){ renderSuggestions($("#studentSearch").value); });
+
+  function renderSuggestions(q){
+    var box = $("#suggestBox");
+    var grade = $("#gradeFilter").value;
+    var minLen = grade ? 1 : 2;
+    var nq = norm(q);
+    if(nq.length < minLen || !roster){ box.hidden = true; return; }
+    var pool = roster;
+    if(grade){ pool = pool.filter(function(r){ return gradeOf(r.cls) === grade; }); }
+    var matches = pool.filter(function(r){ return norm(r.name).indexOf(nq) > -1; }).slice(0, 8);
+    box.innerHTML = "";
+    if(!matches.length){
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "لا توجد نتائج مطابقة.";
+      box.appendChild(empty);
+    } else {
+      matches.forEach(function(m){
+        var b = document.createElement("button");
+        b.type = "button";
+        b.innerHTML = "";
+        var nameSpan = document.createElement("span");
+        nameSpan.textContent = m.name;
+        var clsSpan = document.createElement("span");
+        clsSpan.className = "cls";
+        clsSpan.textContent = m.cls;
+        b.appendChild(nameSpan);
+        b.appendChild(clsSpan);
+        b.addEventListener("click", function(){
+          $("#studentName").value = m.name;
+          $("#className").value = m.cls;
+          $("#studentSearch").value = m.name;
+          box.hidden = true;
+        });
+        box.appendChild(b);
+      });
+    }
+    box.hidden = false;
+  }
+
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".search-box")){ $("#suggestBox").hidden = true; }
+  });
+
+  // ---------- ID card camera OCR (via Apps Script + Google Drive OCR) ----------
+  function setStatus(el, kind, text){
+    el.className = "status-line " + kind;
+    el.textContent = text;
+  }
+
+  function resizeImageToBase64(file, maxDim, quality){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        var scale = Math.min(1, maxDim / Math.max(w, h));
+        var cw = Math.max(1, Math.round(w * scale));
+        var ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement("canvas");
+        canvas.width = cw; canvas.height = ch;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, cw, ch);
+        URL.revokeObjectURL(url);
+        var dataUrl = canvas.toDataURL("image/jpeg", quality || 0.85);
+        resolve(dataUrl.split(",")[1] || "");
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("image_load_failed")); };
+      img.src = url;
+    });
+  }
+
+  async function scanIdCard(file){
+    var statusEl = $("#scanStatus");
+    if(!scriptConfigured()){
+      setStatus(statusEl, "warn", "يلزم إعداد رابط Apps Script أولاً (راجعي README) لتفعيل القراءة التلقائية.");
+      return;
+    }
+    $("#scanBtn").disabled = true;
+    setStatus(statusEl, "muted", "جارٍ رفع الصورة وقراءتها عبر جوجل درايف...");
+    try{
+      var base64 = await resizeImageToBase64(file, 1600, 0.85);
+      var res = await fetch(CONFIG.SCRIPT_URL, {
+        method: "POST",
+        headers: {"Content-Type": "text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"ocr", token: CONFIG.SHARED_TOKEN, imageBase64: base64, mimeType:"image/jpeg"})
+      });
+      var json = await res.json();
+      if(json.error){
+        if(json.error === "unauthorized") setStatus(statusEl, "err", "رمز الدخول غير صحيح — تحقّقي من تطابق SHARED_TOKEN بين index.html و Code.gs.");
+        else if(json.error === "ocr_empty") setStatus(statusEl, "warn", "تعذّرت قراءة أي نص من الصورة، يرجى إدخال الرقم يدوياً.");
+        else if(json.error === "ocr_failed") setStatus(statusEl, "err", "تعذّرت خدمة القراءة — تأكّدي من تفعيل خدمة Drive API في Apps Script.");
+        else setStatus(statusEl, "warn", "تعذّرت القراءة التلقائية، يرجى إدخال الرقم يدوياً.");
+        return;
+      }
+      var digits = (json.idNumber || "").replace(/[^\d]/g, "");
+      if(digits.length >= 5 && digits.length <= 12){
+        $("#idNumber").value = digits;
+        setStatus(statusEl, "ok", "تم القراءة — راجعي الرقم ويمكنك تعديله");
+      } else {
+        setStatus(statusEl, "warn", "تعذّرت القراءة بدقة، يرجى إدخال الرقم يدوياً أو مراجعته");
+      }
+    } catch(e){
+      setStatus(statusEl, "err", "تعذّر الاتصال بخدمة القراءة. تحقّقي من الإنترنت ورابط Apps Script.");
+    } finally {
+      $("#scanBtn").disabled = false;
+    }
+  }
+
+  $("#scanBtn").addEventListener("click", function(){ $("#idPhotoInput").click(); });
+  $("#idPhotoInput").addEventListener("change", function(){
+    var file = this.files && this.files[0];
+    this.value = "";
+    if(!file) return;
+    var thumb = $("#idThumb");
+    thumb.src = URL.createObjectURL(file);
+    thumb.hidden = false;
+    scanIdCard(file);
+  });
+
+  // ---------- reason "other" toggle ----------
+  $("#reason").addEventListener("change", function(){
+    $("#otherReasonField").classList.toggle("show", $("#reason").value === "آخر");
+  });
+
+  function periodLabel(v){
+    if(!v) return "—";
+    if(v === "فسحة") return "الفسحة";
+    if(v === "خارج الدوام") return "خارج الدوام";
+    var found = PERIODS.filter(function(p){ return String(p.n) === String(v); })[0];
+    return found ? found.label : v;
+  }
+
+  // ---------- entries store, via the Apps Script Web App (Code.gs) ----------
+  var entriesCache = [];
+
+  function scriptConfigured(){
+    return CONFIG.SCRIPT_URL && CONFIG.SCRIPT_URL.indexOf("PASTE_") !== 0;
+  }
+
+  async function fetchEntries(){
+    if(!scriptConfigured()) throw new Error("not_configured");
+    var url = CONFIG.SCRIPT_URL + "?token=" + encodeURIComponent(CONFIG.SHARED_TOKEN);
+    var res = await fetch(url);
+    var json = await res.json();
+    if(json.error) throw new Error(json.error);
+    return json.records || [];
+  }
+
+  async function postEntry(record){
+    if(!scriptConfigured()) throw new Error("not_configured");
+    var payload = Object.assign({token: CONFIG.SHARED_TOKEN}, record);
+    var res = await fetch(CONFIG.SCRIPT_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify(payload)
+    });
+    var json = await res.json();
+    if(json.error) throw new Error(json.error);
+    return json;
+  }
+
+  function computeCounts(rows){
+    var map = {};
+    rows.forEach(function(r){
+      var name = (r.studentName || "").trim();
+      if(!name) return;
+      var cls = (r.className || "").trim();
+      var key = name + "||" + cls;
+      if(!map[key]) map[key] = {studentName:name, className:cls, count:0};
+      map[key].count++;
+    });
+    var list = Object.keys(map).map(function(k){ return map[k]; });
+    list.sort(function(a,b){
+      if(b.count !== a.count) return b.count - a.count;
+      return a.studentName.localeCompare(b.studentName, "ar");
+    });
+    return list;
+  }
+
+  function renderLog(rows){
+    var today = isoDate();
+    var todays = rows.filter(function(r){ return r.exitDate === today; });
+    var body = $("#logBody");
+    body.innerHTML = "";
+    if(!todays.length){
+      $("#logEmpty").hidden = false;
+      $("#logEmpty").textContent = "لا توجد استئذانات مسجّلة اليوم بعد.";
+      return;
+    }
+    $("#logEmpty").hidden = true;
+    todays.slice().sort(function(a,b){ return (a.createdAt||"").localeCompare(b.createdAt||""); })
+    .forEach(function(r){
+      var tr = document.createElement("tr");
+      var reasonText = r.reason === "آخر" ? (r.reasonOther || "آخر") : r.reason;
+      var timeText = "";
+      if(r.createdAt){
+        var dt = new Date(r.createdAt);
+        if(!isNaN(dt)) timeText = new Intl.DateTimeFormat("ar-OM", {timeZone:TZ, hour:"2-digit", minute:"2-digit"}).format(dt);
+      }
+      [r.studentName, r.className, periodLabel(r.period), reasonText, timeText].forEach(function(val){
+        var td = document.createElement("td");
+        td.textContent = val || "—";
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  function renderCounts(rows){
+    var list = computeCounts(rows);
+    var body = $("#countsBody");
+    body.innerHTML = "";
+    if(!list.length){
+      $("#countsEmpty").hidden = false;
+      $("#countsEmpty").textContent = "لا توجد بيانات بعد.";
+      return;
+    }
+    $("#countsEmpty").hidden = true;
+    list.forEach(function(item, i){
+      var tr = document.createElement("tr");
+      [i+1, item.studentName, item.className || "—", item.count].forEach(function(val){
+        var td = document.createElement("td");
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  async function refreshEntries(){
+    if(!scriptConfigured()){
+      $("#logEmpty").textContent = "يلزم إعداد رابط Apps Script أولاً (راجعي README).";
+      $("#countsEmpty").textContent = "يلزم إعداد رابط Apps Script أولاً (راجعي README).";
+      return;
+    }
+    try{
+      entriesCache = await fetchEntries();
+      renderLog(entriesCache);
+      renderCounts(entriesCache);
+      setStatus($("#syncStatus"), "muted", "آخر تحديث: " + new Intl.DateTimeFormat("ar-OM", {timeZone:TZ, hour:"2-digit", minute:"2-digit"}).format(new Date()));
+    } catch(e){
+      setStatus($("#syncStatus"), "err", "تعذّر الاتصال بجوجل شيت. تحقّقي من رابط Apps Script والمشاركة.");
+    }
+  }
+
+  $("#refreshBtn").addEventListener("click", refreshEntries);
+  refreshEntries();
+  setInterval(refreshEntries, 45000);
+
+  // ---------- CSV export (built from the live data already fetched) ----------
+  function csvField(v){
+    v = (v === null || v === undefined) ? "" : String(v);
+    if(/[",\n\r]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
+    return v;
+  }
+
+  function buildCsv(rows){
+    var sorted = rows.slice().sort(function(a,b){ return (a.createdAt||"").localeCompare(b.createdAt||""); });
+    var header = ["م","اسم الطالبة","الصف","اسم ولي الأمر","صلة القرابة","هاتف ولي الأمر",
+                  "رقم البطاقة الشخصية","تاريخ الخروج","الحصة","سبب الاستئذان","الملاحظة","وقت الحفظ"];
+    var lines = [header.map(csvField).join(",")];
+    sorted.forEach(function(r, i){
+      var reasonText = r.reason === "آخر" ? (r.reasonOther || "") : r.reason;
+      lines.push([
+        i+1, r.studentName, r.className, r.guardianName, r.relation, r.phone,
+        r.idNumber, r.exitDate, periodLabel(r.period), reasonText, r.note, r.createdAt
+      ].map(csvField).join(","));
+    });
+    return lines.join("\r\n");
+  }
+
+  $("#downloadBtn").addEventListener("click", function(){
+    if(!entriesCache.length){ setStatus($("#syncStatus"), "err", "لا توجد بيانات محمّلة بعد."); return; }
+    var csv = buildCsv(entriesCache);
+    var blob = new Blob(["﻿" + csv], {type:"text/csv;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "قاعدة_استئذان_الطالبات.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+  });
+
+  // ---------- save flow ----------
+  $("#saveBtn").addEventListener("click", async function(){
+    var studentName = $("#studentName").value.trim();
+    var className = $("#className").value.trim();
+    var guardianName = $("#guardianName").value.trim();
+    var relation = $("#relation").value;
+    var phone = $("#phone").value.trim();
+    var idNumber = $("#idNumber").value.trim();
+    var reason = $("#reason").value;
+    var reasonOther = $("#reasonOther").value.trim();
+    var note = $("#note").value.trim();
+    var period = $("#periodSelect").value || currentPeriod().value;
+
+    var missing = [];
+    if(!studentName) missing.push("اسم الطالبة");
+    if(!className) missing.push("الصف");
+    if(!guardianName) missing.push("اسم ولي الأمر");
+    if(!relation) missing.push("صلة القرابة");
+    if(!phone) missing.push("هاتف ولي الأمر");
+    if(!idNumber) missing.push("رقم البطاقة الشخصية");
+    if(!reason) missing.push("سبب الاستئذان");
+    if(reason === "آخر" && !reasonOther) missing.push("توضيح سبب الاستئذان");
+
+    var msgEl = $("#saveMsg");
+    if(missing.length){
+      msgEl.className = "save-msg show err";
+      msgEl.textContent = "يرجى إكمال الحقول التالية: " + missing.join("، ");
+      return;
+    }
+    if(!scriptConfigured()){
+      msgEl.className = "save-msg show err";
+      msgEl.textContent = "لم يتم إعداد رابط Apps Script بعد — راجعي README.md.";
+      return;
+    }
+
+    var record = {
+      studentName: studentName, className: className, guardianName: guardianName,
+      relation: relation, phone: phone, idNumber: idNumber, exitDate: isoDate(),
+      period: period, reason: reason, reasonOther: reasonOther, note: note,
+      createdAt: new Date().toISOString()
+    };
+
+    $("#saveBtn").disabled = true;
+    msgEl.className = "save-msg show";
+    msgEl.textContent = "جارٍ الحفظ في جوجل شيت...";
+    try{
+      await postEntry(record);
+      msgEl.className = "save-msg show ok";
+      msgEl.textContent = "تم حفظ الاستئذان في جوجل شيت بنجاح.";
+      ["studentName","className","guardianName","phone","idNumber","note","reasonOther"].forEach(function(id){ $("#"+id).value = ""; });
+      $("#relation").value = ""; $("#reason").value = "";
+      $("#otherReasonField").classList.remove("show");
+      $("#idThumb").hidden = true;
+      setStatus($("#scanStatus"), "muted", "لم يتم المسح بعد");
+      periodManuallySet = false;
+      refreshEntries();
+    } catch(e){
+      msgEl.className = "save-msg show err";
+      msgEl.textContent = "تعذّر الحفظ في جوجل شيت. تحقّقي من رابط Apps Script، أو حاولي مرة أخرى.";
+    } finally {
+      $("#saveBtn").disabled = false;
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
