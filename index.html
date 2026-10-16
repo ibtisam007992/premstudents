@@ -403,8 +403,8 @@
   function parseRosterCsv(text){
     var lines = text.split(/\r\n|\n|\r/).filter(function(l){ return l.trim().length; });
     var rows = lines.slice(1).map(parseCsvLine);
-    // يفترض أن العمود الأول = اسم الطالبة، الثاني = الصف/الشعبة. عدّلي الفهارس أدناه إن كان ترتيب الأعمدة مختلفاً في شيتك.
-    return rows.map(function(c){ return {name:(c[0]||"").trim(), cls:(c[1]||"").trim()}; }).filter(function(r){ return r.name; });
+    // ترتيب أعمدة شيت الطالبات: م , الصف , اسم الطالبة , هاتف ولي الأمر — لذلك الصف في العمود الثاني (index 1) والاسم في العمود الثالث (index 2).
+    return rows.map(function(c){ return {name:(c[2]||"").trim(), cls:(c[1]||"").trim()}; }).filter(function(r){ return r.name; });
   }
 
   function ensureRoster(){
